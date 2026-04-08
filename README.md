@@ -31,8 +31,8 @@ The **Hospitality Agentic Concierge** is built on the **MuleSoft Agent Fabric**,
 ## 🛠 Prerequisites
 
 * **Anypoint Platform Account** with Agent Fabric enabled.
-* **Anypoint Code Builder (ACB)** or your preferred IDE.
-* **Flex Gateway** for agent traffic management and governance.
+* **Anypoint Code Builder (ACB)**.
+* **Anypoint Flex Gateway** for agent traffic management and governance.
 
 ## ⚙️ Setup & Implementation
 
