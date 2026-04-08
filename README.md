@@ -41,11 +41,3 @@ The network behavior is defined in `agent-network.yaml`. Key configurations incl
 2.  **System Guardrails:** The Lead Concierge is strictly constrained to narrative output—no lists, no headers, and no mechanical formatting in guest responses.
 3.  **Security & Policies:** Includes message logging and header inspection via MuleSoft Flex Gateway policies on agent connections.
 
-### Deployment Steps:
-1.  Ensure **MuleSoft Agent Fabric** is enabled in your Anypoint environment.
-2.  Configure the environment variables for `${ingressgw.url}` and `${gemini.key}`.
-3.  Deploy the agent network bundle using the MAF CLI or Anypoint Code Builder.
-
-```bash
-# Example deployment via MAF CLI
-maf deploy --file agent-network.yaml --env production
