@@ -1,6 +1,16 @@
 # MAF Agentic Concierge - Hospitality Industry
 
-This repository contains the configuration and orchestration logic for the **Agentic Concierge**, a high-touch AI agent network built on **MuleSoft Agent Fabric (MAF)**. It provides a governed, multi-agent ecosystem designed to deliver a "white-glove" guest experience through seamless API-led orchestration.
+This project leverages **MuleSoft Agent Fabric (MAF)** to build a governed, multi-agent concierge system for the hospitality sector. By utilizing MAF, this repository demonstrates how to discover, manage, and orchestrate specialized agents that interact with enterprise data through the MuleSoft ecosystem. 
+
+## 🏨 Project Overview
+
+The **Hospitality Agentic Concierge** is built on the **MuleSoft Agent Fabric**, providing a centralized control plane for AI agents. Rather than relying on a single monolithic bot, this architecture uses a network of specialized agents that leverage MuleSoft's API-led connectivity to perform real-world actions like managing room bookings, coordinating guest services, and handling financial transactions.
+
+### The MAF Foundation:
+* **Agent Registry:** A central catalog for discovering hospitality-specific agents and their capabilities.
+* **Agent Broker:** Orchestrates hand-offs between specialized agents (e.g., transitioning a guest from a room upgrade request to a dinner reservation).
+* **Governance & Security:** Applies enterprise-grade policies to agent interactions, ensuring guest PII is protected and LLM "hallucinations" are mitigated via API constraints.
+* **Observability:** Provides a clear view of agent reasoning and tool execution through the Anypoint Platform.
 
 ## 🏨 Network Architecture
 
@@ -33,11 +43,41 @@ The network leverages a wide array of MCP servers to provide the agents with rea
 * **Logistics Tools:** Delivery and Provisioning trackers.
 * **External Partners:** Real-time connectivity to **Dining Service Partners** and **Event Ticket Services**.
 
+## 🚀 Key Features
+
+* **API-Led Agency:** Automatically transforms existing MuleSoft System and Process APIs into "Tools" that agents can reason over and execute.
+* **Unified Control Plane:** Manage agents across different environments and LLM providers under one secure fabric.
+* **Contextual Hand-offs:** MAF manages the state and memory of a guest's journey as they move between different specialized agents.
+* **Enterprise Guardrails:** Ensures agents operate within the bounds of defined API specifications and organizational policies.
+
+## 🛠 Prerequisites
+
+* **Anypoint Platform Account** with Agent Fabric enabled.
+* **Anypoint Code Builder (ACB)** or your preferred IDE.
+* **Flex Gateway** for agent traffic management and governance.
+
+## ⚙️ Setup & Implementation
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone https://github.com/interface360/maf-agentic-concierge.git
+    cd maf-agentic-concierge
+    git checkout hospitality-industry
+    ```
+
+2.  **Configure Agent Registry:**
+    Register your hospitality APIs in the **Agent Registry** within the Anypoint Platform. Ensure each API has clear descriptions to allow the LLM to understand when to invoke them.
+
+3.  **Define Orchestration:**
+    Use the **Agent Broker** configuration to define how requests are routed. (e.g., routing a "spa booking" intent to the Experience Agent).
+
+4.  **Deploy & Monitor:**
+    Deploy your agents to the MAF runtime and use the **Agent Visualizer** to monitor the "thought process" and execution paths of each guest interaction.
+
 ## ⚙️ Configuration & Deployment
 
 The network behavior is defined in `agent-network.yaml`. Key configurations include:
 
 1.  **LLM Provider:** Powered by **Gemini** (configured via `concierge-gemini`) with a temperature of `0.1` for high precision.
 2.  **System Guardrails:** The Lead Concierge is strictly constrained to narrative output—no lists, no headers, and no mechanical formatting in guest responses.
-3.  **Security & Policies:** Includes message logging and header inspection via MuleSoft Flex Gateway policies on agent connections.
 
