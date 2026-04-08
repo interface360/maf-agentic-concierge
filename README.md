@@ -81,3 +81,25 @@ The network behavior is defined in `agent-network.yaml`. Key configurations incl
 1.  **LLM Provider:** Powered by **Gemini** (configured via `concierge-gemini`) with a temperature of `0.1` for high precision.
 2.  **System Guardrails:** The Lead Concierge is strictly constrained to narrative output—no lists, no headers, and no mechanical formatting in guest responses.
 
+## Sample JSON Input Request
+```json
+{
+ "jsonrpc": "2.0",
+ "id": "4",
+ "method": "message/send",
+ "params": {
+   "message": {
+     "kind": "message",
+     "messageId": "908627f8-fe22-4367-8d9b-6a5ed8571333",
+     "role": "user",
+     "parts": [
+       {
+         "kind": "text",
+         "text": "I'm checking in now. My email is ray@codecrates.xyz and my account id is ACC-001. I’d like to know my current loyalty points and have my luggage sent up to the room once it's ready."
+       }
+     ]
+   }
+ }
+}
+```
+
