@@ -1,60 +1,51 @@
 # MAF Agentic Concierge - Hospitality Industry
 
-This project leverages **MuleSoft Agent Fabric (MAF)** to build a governed, multi-agent concierge system for the hospitality sector. By utilizing MAF, this repository demonstrates how to discover, manage, and orchestrate specialized agents that interact with enterprise data through the MuleSoft ecosystem.
+This repository contains the configuration and orchestration logic for the **Agentic Concierge**, a high-touch AI agent network built on **MuleSoft Agent Fabric (MAF)**. It provides a governed, multi-agent ecosystem designed to deliver a "white-glove" guest experience through seamless API-led orchestration.
 
-## 🏨 Project Overview
+## 🏨 Network Architecture
 
-The **Hospitality Agentic Concierge** is built on the **MuleSoft Agent Fabric**, providing a centralized control plane for AI agents. Rather than relying on a single monolithic bot, this architecture uses a network of specialized agents that leverage MuleSoft's API-led connectivity to perform real-world actions like managing room bookings, coordinating guest services, and handling financial transactions.
+The project implements a **Broker-Specialist** pattern. The central Intelligence Layer (Broker) orchestrates complex guest requests by delegating tasks to specialized agents and retrieving deep context from multiple internal and external data sources via the **Model Context Protocol (MCP)**.
 
-### The MAF Foundation:
-* **Agent Registry:** A central catalog for discovering hospitality-specific agents and their capabilities.
-* **Agent Broker:** Orchestrates hand-offs between specialized agents (e.g., transitioning a guest from a room upgrade request to a dinner reservation).
-* **Governance & Security:** Applies enterprise-grade policies to agent interactions, ensuring guest PII is protected and LLM "hallucinations" are mitigated via API constraints.
-* **Observability:** Provides a clear view of agent reasoning and tool execution through the Anypoint Platform.
+### 🧠 The Agentic Concierge Broker
+The primary guest interface and orchestrator (`agentic-concierge-broker`). It is configured to:
+* **Maintain State:** Full transition history and push notification capabilities.
+* **Persona-Driven:** Uses a Lead Concierge persona that communicates in fluid narrative prose.
+* **Coordinate:** Acts as the single "hub" for the specialists listed below.
 
-## 🤖 The Agent Network
+### 🤖 Specialized Agents (A2A)
+The Broker coordinates with three key specialists over the **Agent-to-Agent (A2A)** protocol:
+* **Planning Specialist:** Manages scheduling, resource allocation, and the **Booking API**.
+* **Rewards Specialist:** Handles loyalty points and guest entitlements via the **Incentive API**.
+* **Logistics Service Specialist:** Coordinates physical deliveries (luggage/tags) and orchestrates external dining/event reservations.
 
-| Agent Name | Specialty | Integrated Systems (via MuleSoft) |
+## 🚀 Key Workflows (Skills)
+
+| Skill ID | Name | Description |
 | :--- | :--- | :--- |
-| **Front Desk Agent** | Check-ins, upgrades, and digital keys. | **Opera PMS / Salesforce Industries** |
-| **Experience Agent** | Dining, local tours, and transport. | **OpenTable / Yelp / Custom Concierge APIs** |
-| **Operations Agent** | Housekeeping and maintenance requests. | **ServiceNow / Slack / HotSOS** |
-| **Folio Manager** | Billing, payments, and checkout. | **Stripe / ERP Financial Systems** |
+| `completeCheckInWorkflow` | **End-to-End Arrival** | Verifies identity, applies loyalty upgrades, and coordinates luggage delivery. |
+| `experienceDiscoveryWorkflow` | **Event Planning** | Matches preferences to external dining and show ticket inventory. |
+| `serviceStatusWorkflow` | **Unified Inquiry** | Provides a single view of point balances and real-time item delivery status. |
 
-## 🚀 Key Features
+## 🛠 Model Context Protocol (MCP) Integrations
 
-* **API-Led Agency:** Automatically transforms existing MuleSoft System and Process APIs into "Tools" that agents can reason over and execute.
-* **Unified Control Plane:** Manage agents across different environments and LLM providers under one secure fabric.
-* **Contextual Hand-offs:** MAF manages the state and memory of a guest's journey as they move between different specialized agents.
-* **Enterprise Guardrails:** Ensures agents operate within the bounds of defined API specifications and organizational policies.
+The network leverages a wide array of MCP servers to provide the agents with real-time "tools" and context:
+* **Internal Tools:** Guest Profiles, VIP Metadata, Booking Systems, and Reward Systems.
+* **Logistics Tools:** Delivery and Provisioning trackers.
+* **External Partners:** Real-time connectivity to **Dining Service Partners** and **Event Ticket Services**.
 
-## 🛠 Prerequisites
+## ⚙️ Configuration & Deployment
 
-* **Anypoint Platform Account** with Agent Fabric enabled.
-* **Anypoint Code Builder (ACB)**.
-* **Anypoint Flex Gateway** for agent traffic management and governance.
+The network behavior is defined in `agent-network.yaml`. Key configurations include:
 
-## ⚙️ Setup & Implementation
+1.  **LLM Provider:** Powered by **Gemini** (configured via `concierge-gemini`) with a temperature of `0.1` for high precision.
+2.  **System Guardrails:** The Lead Concierge is strictly constrained to narrative output—no lists, no headers, and no mechanical formatting in guest responses.
+3.  **Security & Policies:** Includes message logging and header inspection via MuleSoft Flex Gateway policies on agent connections.
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/interface360/maf-agentic-concierge.git
-    cd maf-agentic-concierge
-    git checkout hospitality-industry
-    ```
+### Deployment Steps:
+1.  Ensure **MuleSoft Agent Fabric** is enabled in your Anypoint environment.
+2.  Configure the environment variables for `${ingressgw.url}` and `${gemini.key}`.
+3.  Deploy the agent network bundle using the MAF CLI or Anypoint Code Builder.
 
-2.  **Configure Agent Registry:**
-    Register your hospitality APIs in the **Agent Registry** within the Anypoint Platform. Ensure each API has clear descriptions to allow the LLM to understand when to invoke them.
-
-3.  **Define Orchestration:**
-    Use the **Agent Broker** configuration to define how requests are routed. (e.g., routing a "spa booking" intent to the Experience Agent).
-
-4.  **Deploy & Monitor:**
-    Deploy your agents to the MAF runtime and use the **Agent Visualizer** to monitor the "thought process" and execution paths of each guest interaction.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-*Developed by Interface360 for the MuleSoft AI Community.*
+```bash
+# Example deployment via MAF CLI
+maf deploy --file agent-network.yaml --env production
