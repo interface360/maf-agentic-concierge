@@ -38,7 +38,7 @@ The **Hospitality Agentic Concierge** is built on the **MuleSoft Agent Fabric**,
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/interface360/maf-agentic-concierge.git](https://github.com/interface360/maf-agentic-concierge.git)
+    git clone https://github.com/interface360/maf-agentic-concierge.git
     cd maf-agentic-concierge
     git checkout hospitality-industry
     ```
