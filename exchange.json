@@ -1,0 +1,108 @@
+{
+  "main": "agent-network.yaml",
+  "name": "Agentic Concierge",
+  "classifier": "agent-network",
+  "organizationId": "<REPLACE_WITH_ANYPOINT_ORG_ID>",
+  "descriptorVersion": "1.0.0",
+  "tags": [
+    "hospitality",
+    "concierge",
+    "agent-network"
+  ],
+  "metadata": {
+    "variables": {
+      "planning-specialist": {
+        "url": {
+          "description": "URL for the Planning Specialist Agent (Booking logic or Room Allocation Agent)",
+          "default": "https://xh-agentic-concierge-xz7f5w.k9hbck.usa-e1.cloudhub.io/agents/reservations-specialist",
+          "secret": false
+        }
+      },
+      "rewards-specialist": {
+        "url": {
+          "description": "URL for the Rewards Specialist Agent (Incentive logic or Rewards Eligibility Agent)",
+          "default": "https://xh-agentic-concierge-xz7f5w.k9hbck.usa-e1.cloudhub.io/agents/rewards-specialist",
+          "secret": false
+        }
+      },
+      "logistics-service-specialist": {
+        "url": {
+          "description": "URL for the Logistics Service Specialist (Provision & External logic or Logistics Agent)",
+          "default": "https://xh-agentic-concierge-xz7f5w.k9hbck.usa-e1.cloudhub.io/agents/logistics-specialist",
+          "secret": false
+        }
+      },
+      "profile-data-mcp": {
+        "url": {
+          "description": "Base URL for Account Management API or Account Management MCP",
+          "default": "https://www.a2d-ai.com/api/platform/3e63353c-3791-4b6f-a658-1a84a357da95/",
+          "secret": false
+        }
+      },
+      "guest-preferences-mcp": {
+        "url": {
+          "description": "Base URL for Persona API or Account Management MCP ",
+          "default": "https://www.a2d-ai.com/api/platform/78148fa4-f2fb-4632-ab43-25ec644fb5ff/",
+          "secret": false
+        }
+      },
+      "booking-systems-mcp": {
+        "url": {
+          "description": "Base URL for Booking API",
+          "default": "https://www.a2d-ai.com/api/platform/867c6c3d-52ab-4ead-a352-0e5731803108/",
+          "secret": false
+        }
+      },
+      "reward-systems-mcp": {
+        "url": {
+          "description": "Base URL for Incentive API or Rewards Systems MCP",
+          "default": "https://www.a2d-ai.com/api/platform/ebedfbd8-8d76-47eb-b7c9-293928930704/",
+          "secret": false
+        }
+      },
+      "delivery-systems-mcp": {
+        "url": {
+          "description": "Base URL for Provision API",
+          "default": "https://www.a2d-ai.com/api/platform/90986156-e4f3-4ff7-b780-2cdbfff684e4/",
+          "secret": false
+        }
+      },
+      "dining-partner-mcp": {
+        "url": {
+          "description": "Base URL for Universal Dining Partner MCP",
+          "default": "https://www.a2d-ai.com/api/platform/5a276f6f-c25e-43fd-8f2a-9e490d6e11cc/",
+          "secret": false
+        }
+      },
+      "event-ticket-mcp": {
+        "url": {
+          "description": "Base URL for Universal Ticket Partner MCP",
+          "default": "https://codecrates.xyz/api/v1/external",
+          "secret": false
+        }
+      },
+      "gemini": {
+        "url": {
+          "description": "Google Gemini API Base URL",
+          "default": "https://generativelanguage.googleapis.com/",
+          "secret": false
+        },
+        "key": {
+          "description": "Google Gemini API Key",
+          "default": "",
+          "secret": true
+        },
+        "model": {
+          "description": "Gemini Model Version",
+          "default": "gemini-2.5-flash",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+  ],
+  "groupId": "<REPLACE_WITH_ANYPOINT_ORG_ID>",
+  "assetId": "agentic-concierge",
+  "version": "1.0.0"
+}
