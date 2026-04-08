@@ -1,0 +1,325 @@
+schemaVersion: 1.0.0
+label: Agentic Concierge
+description: >
+  A high-touch AI concierge network providing end-to-end guest orchestration,
+  from room reservations and loyalty rewards to physical deliveries and 
+  external entertainment bookings.
+tags:
+    - concierge  
+brokers:
+    agentic-concierge-broker:
+        card:
+            protocolVersion: 0.3.0
+            name: Agentic Concierge Broker
+            description: >
+                The primary intelligence layer and guest interface. This concierge 
+                orchestrates complex requests across specialized agents to deliver 
+                a seamless, white-glove experience.
+            url: ${ingressgw.url}/concierge-agent
+            capabilities:
+                stateTransitionHistory: true
+                pushNotifications: true
+            version: 1.0.0
+            securitySchemes: {}
+            defaultInputModes:
+                - application/json
+                - text/plain
+            defaultOutputModes:
+                - application/json
+            skills:
+                - id: completeCheckInWorkflow
+                  name: End-to-End Arrival Experience
+                  description: |
+                      Executes the full arrival journey: verifies guest identity, 
+                      checks for available loyalty rewards, applies upgrades to 
+                      room bookings, and coordinates luggage delivery to the room.
+                  examples:
+                      - "I'm checking in. Can I use my points for a suite and have my bags sent up?"
+                  inputModes:
+                      - text/plain
+                  outputModes:
+                      - application/json
+                  tags:
+                      - orchestration
+                      - check-in
+                      - hospitality-logistics
+
+                - id: experienceDiscoveryWorkflow
+                  name: Anniversary & Event Planning
+                  description: |
+                      Coordinates a complete evening itinerary by matching guest preferences 
+                      to external dining availability and show ticket inventory.
+                  examples:
+                      - "It's our anniversary; find a high-end restaurant and two show tickets for tonight."
+                  inputModes:
+                      - text/plain
+                  outputModes:
+                      - application/json
+                  tags:
+                      - external-booking
+                      - lifestyle
+                      - concierge-service
+
+                - id: serviceStatusWorkflow
+                  name: Unified Status Inquiry
+                  description: |
+                      Provides a single view of the guest's current standing, including 
+                      loyalty point balances and the real-time delivery status of physical items.
+                  examples:
+                      - "Where are my golf clubs and how many points do I have left?"
+                  inputModes:
+                      - text/plain
+                  outputModes:
+                      - application/json
+                  tags:
+                      - status-tracking
+                      - loyalty-info
+        spec:
+            llm:
+                ref:
+                    name: concierge-gemini
+                configuration:
+                    model: ${gemini.model}
+                    gemini:
+                        temperature: 0.1
+                        maxOutputTokens: 5000
+            instructions:
+                - |
+                    ### SYSTEM_PROMPT: AGENTIC_CONCIERGE
+
+                    <identity_and_tone>
+                    - **Role:** You are the Lead Concierge for an elite, high-touch service.
+                    - **Tone:** Professional, collaborative, and highly attentive.
+                    - **Voice:** Use "I" (the Lead Concierge) but reference "my team" or "our specialists" to show a coordinated effort.
+                    - **Communication Style:** Write in **fluid narrative prose**. Avoid all mechanical structures like lists, tables, or headers. 
+                    </identity_and_tone>
+
+                    <orchestration_logic>
+                    1. **Context Initialization:** Use `profile-data-mcp` with the user's ID/email to personalize the response immediately.
+                    2. **Specialist Routing:** Coordinate with Rewards for status, Logistics for physical items, and Planning for reservations.
+                    3. **Narrative Synthesis:** Instead of a dry status report, describe the actions you’ve taken with your team. Use phrases like "I’ve just confirmed with our rewards desk" or "Our logistics team is currently..." to show active movement.
+                    </orchestration_logic>
+
+                    <guardrails>
+                    - **STRICT NEGATIVE CONSTRAINT:** Never use bullet points, numbered lists, or markdown headers.
+                    - **STRICT NEGATIVE CONSTRAINT:** Do not use bolding for labels (e.g., avoid "**Status:**"). Only bold key details like names, times, or specific values within the text.
+                    - **Agency Awareness:** Frame the information so it feels like you are the "hub" of multiple departments working for the guest.
+                    - **Graceful Failure:** If a tool/specialist is slow, stay in character: "I am currently waiting for a final confirmation from our logistics team and will update you the moment I hear back."
+                    - **Natural Conclusion:** End the conversation naturally based on the context—no repetitive catchphrases.
+                    </guardrails>
+
+                    <output_formatting>
+                    - **Greeting:** A warm, formal greeting using the guest's name.
+                    - **Structure:** 2-3 paragraphs of flowing text to allow for a more descriptive, conversational feel.
+                    - **Flow:** Connect ideas using collaborative transitions (e.g., "I’ve also spoken with our planning team regarding..." or "Looking at your profile with our rewards specialist...").
+                    - **Visuals:** Clean, sophisticated text that reads like a personalized letter from a Lead Concierge.
+                    </output_formatting>
+
+            links:
+                - agent:
+                    ref:
+                        name: planning-specialist
+                - agent:
+                    ref:
+                        name: rewards-specialist
+                - agent:
+                    ref:
+                        name: logistics-service-specialist
+            tools:
+                - mcp:
+                    ref:
+                        name: profile-data-mcp
+                - mcp:
+                    ref:
+                        name: guest-preferences-mcp
+
+agents:
+    planning-specialist:
+        label: Planning Specialist
+        description: >
+            Manages the scheduling and allocation of physical and digital resources. 
+            This agent is responsible for creating, updating, and verifying bookings 
+            using the Booking API.
+        tags:
+            - scheduling
+            - reservations
+            - room-management
+        metadata:
+            protocol: a2a
+            platform: MuleSoft
+
+    rewards-specialist:
+        label: Rewards Specialist
+        description: >
+            Handles guest entitlements, loyalty points, and promotional rewards. 
+            This agent retrieves and validates available incentives using the 
+            Incentive API to facilitate upgrades and discounts.
+        tags:
+            - loyalty
+            - incentives
+            - benefits
+        metadata:
+            protocol: a2a
+            platform: MuleSoft
+
+    logistics-service-specialist:
+        label: Logistics Service Specialist
+        description: >
+            Coordinates high-touch physical logistics and lifestyle services. 
+            This agent manages item provisioning (luggage/tags) via the Provision API 
+            and orchestrates external reservations with dining and event partners.
+        tags:
+            - logistics
+            - delivery
+            - lifestyle-concierge
+        metadata:
+            protocol: a2a
+            platform: MuleSoft
+mcpServers:
+    profile-data-mcp:
+        label: Account Management Tool
+        description: Primary source for guest identity and account status.
+        tags:
+            - internal
+            - identity
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+    guest-preferences-mcp:
+        label: Guest Preference Tool
+        description: Stores guest preferences and VIP metadata.
+        tags:
+            - internal
+            - persona
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+    booking-systems-mcp:
+        label: Booking Tool
+        description: Manages room and resource schedules.
+        tags:
+            - internal
+            - bookings
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+    reward-systems-mcp:
+        label: Reward Tool
+        description: Manages member points and entitlement values.
+        tags:
+            - internal
+            - rewards
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+    delivery-systems-mcp:
+        label: Delivery Tool
+        description: Tracks physical items and provisioning journeys.
+        tags:
+            - internal
+            - provisioning
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+    dining-partner-mcp:
+        label: Dining Service Partner
+        description: External connection for restaurant table availability.
+        tags:
+            - external
+            - dining
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+
+    event-ticket-mcp:
+        label: Ticket Service Partner
+        description: External connection for show and concert tickets.
+        tags:
+            - external
+            - events
+        metadata:
+            transport:
+                kind: streamableHttp
+                path: /mcp
+
+llmProviders:
+    concierge-gemini:
+        label: Concierge Gemini
+        metadata:
+            platform: Gemini
+
+connections:
+    geminiConnection:
+        kind: llm
+        ref:
+            name: concierge-gemini
+        spec:
+            url: ${gemini.url}
+            configuration:
+                apiKey: ${gemini.key}
+    planningConnection:
+        kind: agent
+        ref:
+            name: planning-specialist
+        spec:
+            url: ${planning-specialist.url}
+    rewardsConnection:
+        kind: agent
+        ref:
+            name: rewards-specialist
+        spec:
+            url: ${rewards-specialist.url}
+    logisticServiceConnection:
+        kind: agent
+        ref:
+            name: logistics-service-specialist
+        spec:
+            url: ${logistics-service-specialist.url}
+    profileMcpConnection:
+        kind: mcp
+        ref:
+            name: profile-data-mcp
+        spec:
+            url: ${profile-data-mcp.url}
+    guestPreferenceMcpConnection:
+        kind: mcp
+        ref:
+            name: guest-preferences-mcp
+        spec:
+            url: ${guest-preferences-mcp.url}
+    bookingMcpConnection:
+        kind: mcp
+        ref:
+            name: booking-systems-mcp
+        spec:
+            url: ${booking-systems-mcp.url}
+    rewardMcpConnection:
+        kind: mcp
+        ref:
+            name: reward-systems-mcp
+        spec:
+            url: ${reward-systems-mcp.url}
+    deliveryMcpConnection:
+        kind: mcp
+        ref:
+            name: delivery-systems-mcp
+        spec:
+            url: ${delivery-systems-mcp.url}
+    diningMcpConnection:
+        kind: mcp
+        ref:
+            name: dining-partner-mcp
+        spec:
+            url: ${dining-partner-mcp.url}
+    eventTicketMcpConnection:
+        kind: mcp
+        ref:
+            name: event-ticket-mcp
+        spec:
+            url: ${event-ticket-mcp.url}
